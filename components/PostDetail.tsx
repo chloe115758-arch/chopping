@@ -3,22 +3,27 @@
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { CURRENT_USER } from "@/lib/mock-data";
-import { perPerson, shareQtyText, won } from "@/lib/share";
+import { POLICY } from "@/lib/policy-copy";
+import { perPerson, shareHistoryText, shareQtyText, won } from "@/lib/share";
 import { useStore } from "@/lib/store";
 import Button from "./Button";
 import Countdown from "./Countdown";
 import EmptyState from "./EmptyState";
 import PageHeader from "./PageHeader";
+import People from "./People";
 import PostThumb from "./PostThumb";
+import Sheet from "./Sheet";
 
 const label = "text-meta font-medium text-brown-soft";
-// 섹션 사이를 가르는 두꺼운 띠 (화면 폭 끝까지)
-const band = <hr className="-mx-gutter h-2 border-0 bg-line" />;
+// 큰 묶음의 제목. 묶음 사이는 선 없이 제목과 넓은 여백으로만 나눈다
+const heading = "text-heading font-semibold";
 
 export default function PostDetail() {
   const { id } = useParams<{ id: string }>();
   const { posts, applied, apply } = useStore();
   const [slotIdx, setSlotIdx] = useState(0);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [justApplied, setJustApplied] = useState(false); // 이 화면에서 방금 신청했을 때만 자리 채움 동작을 보여준다
 
   const post = posts.find((p) => p.id === id);
   if (!post)
@@ -39,7 +44,7 @@ export default function PostDetail() {
   const full = post.joined >= post.people;
 
   return (
-    <main className="flex flex-col gap-6">
+    <main className="flex flex-col gap-6 pb-10">
       <PageHeader title="나눔 상세" back="/" />
 
       {/* 사진은 화면 폭 끝까지 */}
@@ -50,10 +55,18 @@ export default function PostDetail() {
       />
 
       <section>
-        <h2 className="text-title font-bold">{post.item}</h2>
-        <p className="mt-1 text-meta text-brown-soft">
-          {post.author.nickname} · 후기 {post.author.reviewCount}개
-        </p>
+        {/* 품목명은 한 단계 덜 굵게: 화면에서 가장 센 글자는 내가 내는 금액 */}
+        <h2 className="text-title font-semibold">{post.item}</h2>
+        <dl className="mt-2 flex gap-5 text-meta">
+          <div className="flex gap-1.5">
+            <dt className="text-brown-soft">올린 사람</dt>
+            <dd className="font-semibold">{post.author.nickname}</dd>
+          </div>
+          <div>
+            <dt className="sr-only">나눔 이력</dt>
+            <dd className="font-semibold">{shareHistoryText(post.author.shareCount)}</dd>
+          </div>
+        </dl>
       </section>
 
       {share && (
@@ -63,40 +76,58 @@ export default function PostDetail() {
           <p className="mt-1 text-meta text-brown-soft">
             총 {won(post.totalPrice)} ÷ {post.people}명 · {shareQtyText(post, share.qty)}
           </p>
-          <p className="mt-2 text-meta text-brown-soft">
-            신청 <Countdown closesInMin={post.closesInMin} />
-          </p>
         </section>
       )}
 
-      <p className="rounded-card bg-yellow/30 px-4 py-3 text-meta font-medium">
-        공공장소에서 만나요. 정확한 주소와 실명은 서로 공개되지 않아요.
-      </p>
+      {/* 가격 바로 아래: 이 나눔이 성사되는지(인원, 남은 시간). 줄마다 왼쪽 항목·오른쪽 값으로 맞추고 그 사이만 가는 선으로 나눈다 */}
+      <section className="rounded-card border border-line bg-card px-4">
+        <div className="py-4">
+          <div className="flex items-baseline justify-between gap-3">
+            <h2 className="font-semibold">모집 현황</h2>
+            <p className="text-heading font-bold">
+              {done && (
+                <span className="mr-2 text-meta font-medium text-brown-soft">내 자리 포함</span>
+              )}
+              {post.joined}/{post.people}명
+            </p>
+          </div>
+          <div className="mt-3">
+            <People joined={post.joined} people={post.people} dropLast={justApplied && !sheetOpen} />
+          </div>
+        </div>
+        <div className="flex items-baseline justify-between gap-3 border-t border-line py-3.5 text-meta">
+          <span className="text-brown-soft">신청 마감까지</span>
+          <span className="font-semibold">
+            <Countdown closesInMin={post.closesInMin} />
+          </span>
+        </div>
+      </section>
 
-      {band}
-
-      <section>
-        <h2 className={`mb-1 ${label}`}>모집 현황</h2>
-        <p className="text-heading font-semibold">
-          {post.joined}/{post.people}명
-          {done && (
-            <span className="ml-2 text-meta font-medium text-brown-soft">내 자리 포함</span>
-          )}
+      {/* 읽는 정보는 라벨–값 줄로 한 묶음 */}
+      <section className="mt-4">
+        <h2 className={heading}>나눔 안내</h2>
+        <dl className="mt-4 flex flex-col gap-4">
+        {[
+          ["수령 장소", post.place],
+          ["나누는 방법", post.splitMethod],
+          ["결제", POLICY.payment],
+          ["취소", POLICY.autoCancel],
+          ].map(([name, value]) => (
+            <div key={name} className="flex gap-3">
+              <dt className={`w-20 shrink-0 ${label}`}>{name}</dt>
+              <dd className="font-medium">{value}</dd>
+            </div>
+          ))}
+        </dl>
+        {/* 노랑 면 위 brown 글자 (대비 8.27) */}
+        <p className="mt-5 rounded-card bg-yellow px-4 py-3 text-meta font-semibold">
+          {POLICY.safety}
         </p>
       </section>
 
-      {band}
-
-      <section>
-        <h2 className={label}>수령 장소</h2>
-        <p className="mt-1 text-heading font-semibold">{post.place}</p>
-      </section>
-
-      {band}
-
-      <fieldset disabled={!!done || isMine}>
-        <legend className={`float-left w-full ${label}`}>수령 시간</legend>
-        <div className="clear-both flex flex-col gap-2 pt-2">
+      <fieldset disabled={!!done || isMine} className="mt-4">
+        <legend className={`float-left w-full ${heading}`}>수령 시간</legend>
+        <div className="clear-both flex flex-col gap-2 pt-4">
           {post.slots.map((slot, i) => {
             const checked = done ? done.slot.label === slot.label : i === slotIdx;
             return (
@@ -125,9 +156,9 @@ export default function PostDetail() {
         className="fixed inset-x-0 bottom-0 mx-auto w-full max-w-[430px] border-t border-line bg-cream px-gutter pb-4 pt-3"
       >
         {done ? (
-          <p className="rounded-card bg-apricot p-4 text-center text-heading font-semibold">
-            신청했어요. {done.slot.label}에 만나요!
-          </p>
+          <Button href="/my" className="w-full">
+            신청 완료 · 내 활동에서 보기
+          </Button>
         ) : isMine ? (
           <p className="py-3 text-center font-semibold">내가 올린 나눔이에요.</p>
         ) : full ? (
@@ -135,11 +166,62 @@ export default function PostDetail() {
             모집이 끝났어요
           </Button>
         ) : (
-          <Button className="w-full" onClick={() => apply(post.id, post.slots[slotIdx])}>
-            조금만 받을게요
+          <Button className="w-full" onClick={() => setSheetOpen(true)}>
+            조금만 받을게요{share && ` · ${won(share.price)}`}
           </Button>
         )}
       </div>
+
+      {/* 확인 → 신청하면 같은 시트가 완료 안내로 바뀐다. 시트를 닫으면 내 자리가 내려와 채워진다 */}
+      <Sheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        title={done ? "신청했어요." : "이대로 신청할까요?"}
+      >
+        {done ? (
+          <p className="mt-3 text-heading font-semibold">
+            {done.slot.label}에 {post.place}에서 만나요.
+          </p>
+        ) : (
+          <dl className="mt-4 flex flex-col gap-3">
+            {[
+              ["수령 시간", post.slots[slotIdx].label],
+              ["수령 장소", post.place],
+              ["내가 내는 금액", share ? won(share.price) : "-"],
+            ].map(([name, value]) => (
+              <div key={name} className="flex justify-between gap-4">
+                <dt className="text-meta text-brown-soft">{name}</dt>
+                <dd className="text-right font-semibold">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        <p className="mt-4 rounded-field bg-card px-4 py-3 text-meta">{POLICY.payment}</p>
+        <div className="mt-5 flex gap-2">
+          <button
+            type="button"
+            onClick={() => setSheetOpen(false)}
+            className="min-h-14 flex-1 rounded-full border border-line bg-card font-semibold"
+          >
+            닫기
+          </button>
+          {done ? (
+            <Button href="/my" className="flex-[2]">
+              내 활동에서 보기
+            </Button>
+          ) : (
+            <Button
+              className="flex-[2]"
+              onClick={() => {
+                apply(post.id, post.slots[slotIdx]);
+                setJustApplied(true);
+              }}
+            >
+              신청하기
+            </Button>
+          )}
+        </div>
+      </Sheet>
     </main>
   );
 }

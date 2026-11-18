@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CURRENT_USER, PUBLIC_PLACES } from "@/lib/mock-data";
+import { CATEGORIES, CURRENT_USER, PUBLIC_PLACES, SPLIT_METHODS } from "@/lib/mock-data";
 import { perPerson, shareQtyText, slotLabel, won } from "@/lib/share";
 import { useStore } from "@/lib/store";
 import Button from "./Button";
@@ -28,7 +28,7 @@ export default function NewPostForm() {
   const [people, setPeople] = useState(4);
   const [splitByKind, setSplitByKind] = useState(false);
   const [photo, setPhoto] = useState<string>();
-  const [place, setPlace] = useState(PUBLIC_PLACES[0]); // 공공장소를 기본값으로 제안
+  const [place, setPlace] = useState(PUBLIC_PLACES[CURRENT_USER.town][0]); // 공공장소를 기본값으로 제안
   const [showMap, setShowMap] = useState(false);
   const [pin, setPin] = useState<Pin>();
   const [today] = useState(() => ymd(new Date()));
@@ -87,12 +87,15 @@ export default function NewPostForm() {
       totalPrice: Number(price),
       people,
       joined: 1, // 등록자 본인
-      distanceM: 0,
+      dong: CURRENT_USER.town,
+      category: CATEGORIES[0], // 3-B에서 선택 UI로 바꾼다
       // 신청 마감은 수령 1시간 전 (최소 10분은 열어 둔다)
       closesInMin: elapsedMin + Math.max(10, Math.round(inHours * 60) - 60),
       place: place.trim(),
       pin,
       slots: [{ label: pickupLabel, inHours }],
+      // shortcut: 등록 화면에 선택 UI가 없어 기본값 고정. 선택을 받게 되면 여기에 연결한다
+      splitMethod: SPLIT_METHODS[1],
       author: CURRENT_USER,
     });
     setPosted(true);
@@ -252,7 +255,7 @@ export default function NewPostForm() {
             </button>
           </div>
           <datalist id="public-places">
-            {PUBLIC_PLACES.map((p) => (
+            {PUBLIC_PLACES[CURRENT_USER.town].map((p) => (
               <option key={p} value={p} />
             ))}
           </datalist>
@@ -311,7 +314,7 @@ export default function NewPostForm() {
         </fieldset>
 
         <p className="rounded-card bg-yellow/30 px-4 py-3 text-meta font-medium">
-          닉네임과 후기 수만 공개돼요. 정확한 주소와 실명은 받지 않아요.
+          닉네임과 나눔 완료 횟수만 공개돼요. 정확한 주소와 실명은 받지 않아요.
         </p>
 
         <Button type="submit" disabled={!ready} className="w-full">

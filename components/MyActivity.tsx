@@ -50,7 +50,7 @@ export default function MyActivity() {
         <dl className="mt-4 grid grid-cols-3 divide-x divide-brown/40 text-center">
           {stat("신청", `${appliedPosts.length}건`)}
           {stat("등록", `${mine.length}건`)}
-          {stat("후기", `${CURRENT_USER.reviewCount}개`)}
+          {stat("나눔 완료", `${CURRENT_USER.shareCount}번`)}
         </dl>
       </div>
 

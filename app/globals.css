@@ -29,6 +29,21 @@
   --text-meta: 14px; /* 보조 정보, 라벨. 가격·시간·장소가 여기 실려서 14px 아래로 내리지 않는다 */
   --text-nav: 11px; /* 하단 탭 라벨 */
 
+  /* 움직임은 motion-safe: 와 같이 써서 "동작 줄이기" 설정이면 꺼지게 한다 */
+  --animate-drop: drop 0.5s cubic-bezier(0.3, 1.4, 0.6, 1) both; /* 신청한 내 자리가 내려와 채워짐 */
+  --animate-sheet-up: sheet-up 0.25s ease-out; /* 확인 시트 */
+  @keyframes drop {
+    from {
+      transform: translateY(-48px);
+      opacity: 0;
+    }
+  }
+  @keyframes sheet-up {
+    from {
+      transform: translateY(100%);
+    }
+  }
+
   --spacing-gutter: 20px; /* 화면 좌우 여백 */
 
   --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;

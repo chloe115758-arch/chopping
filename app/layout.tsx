@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className="h-full antialiased">
-      <body className="min-h-full bg-cream font-sans text-body tracking-[-0.01em] text-brown">
+      <body className="min-h-full break-keep wrap-break-word bg-cream font-sans text-body tracking-[-0.01em] text-brown">
         <link
           rel="stylesheet"
           precedence="default"

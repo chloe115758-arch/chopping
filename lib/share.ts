@@ -14,12 +14,29 @@ export const shareQtyText = (
   qty: number,
 ) => (post.splitByKind ? "종류별로 분할" : `내 몫 ${qty}${post.unit}`);
 
+// 올린 사람의 나눔 이력. 처음이면 0 대신 "첫 나눔"
+export const shareHistoryText = (count: number) =>
+  count > 0 ? `나눔 ${count}번 완료` : "첫 나눔";
+
 export const won = (n: number) => `${n.toLocaleString("ko-KR")}원`;
 
-export const distance = (m: number) =>
-  m < 1000 ? `${m}m` : `${(m / 1000).toFixed(1)}km`;
-
 export const URGENT_MIN = 180;
+
+// 피드 필터: 동네는 항상, 나머지(품목명 검색·카테고리·마감 임박)는 준 것만 함께 적용. 마감 빠른 순
+export function filterPosts<
+  P extends { item: string; dong: string; category: string; closesInMin: number },
+>(posts: P[], f: { dong: string; q?: string; category?: string; urgent?: boolean }) {
+  const q = f.q?.trim().toLowerCase();
+  return posts
+    .filter(
+      (p) =>
+        p.dong === f.dong &&
+        (!q || p.item.toLowerCase().includes(q)) &&
+        (!f.category || p.category === f.category) &&
+        (!f.urgent || p.closesInMin <= URGENT_MIN),
+    )
+    .sort((a, b) => a.closesInMin - b.closesInMin);
+}
 
 // 남은 초 → "45분 남음" / "3시간 20분 남음" / "2일 남음". 분·일은 내림, 1분 미만은 1분
 export function timeLeft(sec: number) {

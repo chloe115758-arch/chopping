@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { CURRENT_USER } from "@/lib/mock-data";
-import { URGENT_MIN } from "@/lib/share";
+import { URGENT_MIN, filterPosts } from "@/lib/share";
 import { useStore } from "@/lib/store";
 import EmptyState from "./EmptyState";
 import PostCard from "./PostCard";
@@ -14,10 +14,9 @@ export default function Feed() {
   const empty = useSearchParams().has("empty");
   const { posts } = useStore();
   const [tab, setTab] = useState(0);
-  // 마감이 빠른 순
-  const all = empty ? [] : [...posts].sort((a, b) => a.closesInMin - b.closesInMin);
-  const shown =
-    tab === 1 ? all.filter((p) => p.closesInMin <= URGENT_MIN) : all;
+  const dong = CURRENT_USER.town;
+  const all = empty ? [] : filterPosts(posts, { dong });
+  const shown = filterPosts(all, { dong, urgent: tab === 1 });
 
   return (
     <main className="flex flex-col gap-7">
