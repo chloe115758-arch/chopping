@@ -1,26 +1,19 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* 디자인 토큰: 색과 모서리는 여기서만 바꾼다 */
+@theme {
+  --color-cream: #fff8f0; /* 배경 */
+  --color-card: #ffffff;
+  --color-line: #f0e4d8;
+  --color-coral: #f28c6b; /* 버튼 배경. 글자는 brown (대비 5.59) */
+  --color-coral-deep: #b84a28; /* 코랄색 글자용 (크림 위 4.92) */
+  --color-brown: #3d2b1f; /* 본문 (크림 위 12.75) */
+  --color-brown-soft: #7a6557; /* 보조 글자 (크림 위 5.21) */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-gray: #6f6f6f; /* 취소선 원래 가격 (흰 카드 위 5.0) */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+  --radius-control: 16px; /* 버튼, 입력 */
+  --radius-card: 20px;
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
