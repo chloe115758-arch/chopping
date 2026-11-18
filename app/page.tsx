@@ -1,7 +1,11 @@
+import { Suspense } from "react";
 import Feed from "@/components/Feed";
 
-// /?empty=1 로 빈 피드 화면을 시연할 수 있다
-export default async function Home({ searchParams }: PageProps<"/">) {
-  const { empty } = await searchParams;
-  return <Feed empty={empty !== undefined} />;
+// Feed가 useSearchParams를 써서 Suspense 경계가 필요하다
+export default function Home() {
+  return (
+    <Suspense>
+      <Feed />
+    </Suspense>
+  );
 }

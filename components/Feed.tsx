@@ -1,12 +1,15 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { URGENT_MIN } from "@/lib/share";
 import EmptyState from "./EmptyState";
 import PostCard from "./PostCard";
 
-export default function Feed({ empty }: { empty: boolean }) {
+// /?empty=1 로 빈 피드 화면을 시연할 수 있다
+export default function Feed() {
+  const empty = useSearchParams().has("empty");
   const { posts } = useStore();
   const [urgentOnly, setUrgentOnly] = useState(false);
   const all = empty ? [] : posts;
@@ -17,7 +20,7 @@ export default function Feed({ empty }: { empty: boolean }) {
       type="button"
       aria-pressed={urgentOnly === on}
       onClick={() => setUrgentOnly(on)}
-      className={`rounded-control border px-4 py-2 text-sm font-semibold ${
+      className={`rounded-block border px-4 py-2 text-sm font-semibold ${
         urgentOnly === on
           ? "border-brown bg-brown text-cream"
           : "border-line bg-card text-brown"
@@ -48,7 +51,7 @@ export default function Feed({ empty }: { empty: boolean }) {
           {shown.length === 0 ? (
             <EmptyState message="지금은 마감 임박한 나눔이 없어요." />
           ) : (
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-4">
               {shown.map((post) => (
                 <li key={post.id}>
                   <PostCard post={post} />
