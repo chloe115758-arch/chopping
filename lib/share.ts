@@ -26,3 +26,12 @@ export function hms(sec: number) {
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${pad(Math.floor(sec / 3600))}:${pad(Math.floor(sec / 60) % 60)}:${pad(sec % 60)}`;
 }
+
+// 수령 시각 → "11월 19일(목) 오후 7시" / "오전 11시 30분"
+export function slotLabel(d: Date) {
+  const h = d.getHours();
+  const m = d.getMinutes();
+  return `${d.getMonth() + 1}월 ${d.getDate()}일(${"일월화수목금토"[d.getDay()]}) ${
+    h < 12 ? "오전" : "오후"
+  } ${h % 12 || 12}시${m ? ` ${m}분` : ""}`;
+}

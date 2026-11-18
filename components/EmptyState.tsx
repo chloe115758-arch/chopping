@@ -1,4 +1,5 @@
-import BlockButton from "./BlockButton";
+import Button from "./Button";
+import Card from "./Card";
 
 export default function EmptyState({
   message,
@@ -8,11 +9,9 @@ export default function EmptyState({
   action?: { href: string; label: string };
 }) {
   return (
-    <div className="flex flex-col items-center gap-5 px-4 py-20 text-center">
-      <p className="text-lg font-semibold">{message}</p>
-      {action && (
-        <BlockButton href={action.href}>{action.label}</BlockButton>
-      )}
-    </div>
+    <Card className="flex flex-col items-center gap-6 px-6 py-14 text-center">
+      <p className="text-heading font-medium">{message}</p>
+      {action && <Button href={action.href}>{action.label}</Button>}
+    </Card>
   );
 }

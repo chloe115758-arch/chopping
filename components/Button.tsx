@@ -1,17 +1,15 @@
 import Link from "next/link";
 
-// 누르면 두께 띠가 4px → 2px로 줄고 2px 내려간다. 터치 영역은 최소 48px.
-const base =
-  "mb-1 inline-flex min-h-12 items-center justify-center rounded-block px-6 font-bold";
-const enabled =
-  "bg-coral text-brown shadow-[0_4px_0_var(--color-coral-deep)] transition-[translate,box-shadow] duration-75 active:translate-y-0.5 active:shadow-[0_2px_0_var(--color-coral-deep)] motion-reduce:transition-none";
+// 알약 모양 기본 버튼. 터치 영역은 56px. 코랄 위 글자는 brown만 쓴다 (대비 5.59)
+const base = "inline-flex min-h-14 items-center justify-center rounded-full px-6 text-base font-semibold";
+const enabled = "bg-coral text-brown active:opacity-80";
 const off = "cursor-not-allowed border border-line bg-cream text-brown-soft";
 
 type Props =
   | { href: string; className?: string; children: React.ReactNode }
   | ({ href?: undefined } & React.ButtonHTMLAttributes<HTMLButtonElement>);
 
-export default function BlockButton(props: Props) {
+export default function Button(props: Props) {
   if (props.href !== undefined)
     return (
       <Link href={props.href} className={`${base} ${enabled} ${props.className ?? ""}`}>

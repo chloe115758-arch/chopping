@@ -12,11 +12,26 @@
 
   --color-gray: #6f6f6f; /* 취소선 원래 가격 (흰 카드 위 5.0) */
 
-  /* 블록 보조색. 이 위에는 brown 글자만 올린다 (노랑 8.27, 살구 9.70). 다른 글자색은 4.5 미달 */
+  /* 보조색. 이 위에는 brown 글자만 올린다 (노랑 8.27, 살구 9.70). 다른 글자색은 4.5 미달 */
   --color-yellow: #f6c453;
   --color-apricot: #fbd3be;
 
-  --radius-block: 12px; /* 카드, 버튼, 입력 공통 */
+  /* 모서리. 버튼·탭·요약 알약은 rounded-full */
+  --radius-card: 20px; /* 카드, 배너 */
+  --radius-field: 12px; /* 입력, 선택지, 썸네일 */
+  --radius-nav: 32px; /* 하단 탭 윗모서리, 내 활동 상단 면 아랫모서리 */
+
+  --shadow-card: 0 2px 14px rgb(61 43 31 / 0.08); /* 카드: 테두리 없이 연한 갈색 그림자 */
+
+  /* 글자 크기 단계 (레퍼런스 앱 화면에서 잰 비율) */
+  --text-display: 36px; /* 내가 내는 금액 */
+  --text-title: 22px; /* 상세 품목명 */
+  --text-heading: 17px; /* 화면 제목, 섹션 제목 */
+  --text-body: 15px;
+  --text-meta: 13px; /* 보조 정보, 라벨 */
+  --text-nav: 11px; /* 하단 탭 라벨 */
+
+  --spacing-gutter: 20px; /* 화면 좌우 여백 */
 
   --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }

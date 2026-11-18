@@ -20,7 +20,7 @@ export default function Countdown({ closesInMin }: { closesInMin: number }) {
   // 마감 임박만 초 단위로 센다
   if (left <= URGENT_MIN * 60)
     return (
-      <span className="font-bold tabular-nums text-coral-deep">{hms(left)} 남음</span>
+      <span className="font-semibold tabular-nums text-coral-deep">{hms(left)} 남음</span>
     );
   if (left < 86400) return <span>{Math.floor(left / 3600)}시간 남음</span>;
   // 날짜는 브라우저 시계·시간대가 필요해서 hydration이 끝난 뒤에만 그린다

@@ -18,10 +18,14 @@ const Ctx = createContext<Store | null>(null);
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [posts, setPosts] = useState(seed);
   const [applied, setApplied] = useState<Applied[]>([
-    { postId: "3", slot: seed[2].slots[1] },
+    { postId: "3", slot: seed[2].slots[0] },
   ]);
-  const apply = (postId: string, slot: Slot) =>
-    setApplied((a) => (a.some((x) => x.postId === postId) ? a : [...a, { postId, slot }]));
+  const apply = (postId: string, slot: Slot) => {
+    if (applied.some((a) => a.postId === postId)) return;
+    setApplied((a) => [...a, { postId, slot }]);
+    // 신청하면 내 자리가 하나 채워진다
+    setPosts((ps) => ps.map((p) => (p.id === postId ? { ...p, joined: p.joined + 1 } : p)));
+  };
   const addPost = (post: Post) => setPosts((p) => [post, ...p]);
   return <Ctx value={{ posts, applied, apply, addPost }}>{children}</Ctx>;
 }
