@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ME, ME_REVIEW_COUNT, PUBLIC_PLACES } from "@/lib/mock-data";
+import { CURRENT_USER, PUBLIC_PLACES } from "@/lib/mock-data";
 import { perPerson, shareQtyText, slotLabel, won } from "@/lib/share";
 import { useStore } from "@/lib/store";
 import Button from "./Button";
@@ -93,7 +93,7 @@ export default function NewPostForm() {
       place: place.trim(),
       pin,
       slots: [{ label: pickupLabel, inHours }],
-      author: { nickname: ME, reviewCount: ME_REVIEW_COUNT },
+      author: CURRENT_USER,
     });
     setPosted(true);
   };

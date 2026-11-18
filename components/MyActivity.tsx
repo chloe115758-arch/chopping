@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ME, ME_REVIEW_COUNT } from "@/lib/mock-data";
+import { CURRENT_USER } from "@/lib/mock-data";
 import { perPerson, won } from "@/lib/share";
 import { useStore } from "@/lib/store";
 import EmptyState from "./EmptyState";
@@ -12,7 +12,7 @@ export default function MyActivity() {
   const { posts, applied } = useStore();
   const [tab, setTab] = useState(0);
 
-  const mine = posts.filter((p) => p.author.nickname === ME);
+  const mine = posts.filter((p) => p.author.nickname === CURRENT_USER.nickname);
   const appliedPosts = applied.flatMap((a) => {
     const post = posts.find((p) => p.id === a.postId);
     return post ? [{ post, slot: a.slot }] : [];
@@ -31,7 +31,7 @@ export default function MyActivity() {
     <main className="flex flex-col gap-5">
       {/* 코랄 면 위 글자는 brown만 쓴다 (대비 5.59) */}
       <div className="-mx-gutter -mt-6 rounded-b-nav bg-coral px-gutter pb-6 pt-6">
-        <h1 className="text-heading font-semibold">{ME}님의 활동</h1>
+        <h1 className="text-heading font-semibold">{CURRENT_USER.nickname}님의 활동</h1>
         <section className="mt-3 rounded-card bg-card p-4">
           <h2 className="text-meta font-medium text-brown-soft">다음 수령 일정</h2>
           {next ? (
@@ -50,7 +50,7 @@ export default function MyActivity() {
         <dl className="mt-4 grid grid-cols-3 divide-x divide-brown/40 text-center">
           {stat("신청", `${appliedPosts.length}건`)}
           {stat("등록", `${mine.length}건`)}
-          {stat("후기", `${ME_REVIEW_COUNT}개`)}
+          {stat("후기", `${CURRENT_USER.reviewCount}개`)}
         </dl>
       </div>
 

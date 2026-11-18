@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { ME } from "@/lib/mock-data";
+import { CURRENT_USER } from "@/lib/mock-data";
 import { perPerson, shareQtyText, won } from "@/lib/share";
 import { useStore } from "@/lib/store";
 import Button from "./Button";
@@ -34,7 +34,7 @@ export default function PostDetail() {
 
   const share = perPerson(post.totalQty, post.totalPrice, post.people);
   const done = applied.find((a) => a.postId === post.id);
-  const isMine = post.author.nickname === ME;
+  const isMine = post.author.nickname === CURRENT_USER.nickname;
   // shortcut: 인원이 찼는지만 본다. 마감 시각이 지난 글의 신청 막기는 실제 마감 시각이 생기면 추가한다.
   const full = post.joined >= post.people;
 
@@ -59,13 +59,9 @@ export default function PostDetail() {
       {share && (
         <section>
           <p className={label}>내가 내는 금액</p>
-          <s className="block text-meta text-gray">
-            <span className="sr-only">전체 가격 </span>
-            {won(post.totalPrice)}
-          </s>
           <p className="text-display font-bold leading-tight">{won(share.price)}</p>
           <p className="mt-1 text-meta text-brown-soft">
-            {won(post.totalPrice)} ÷ {post.people}명 · {shareQtyText(post, share.qty)}
+            총 {won(post.totalPrice)} ÷ {post.people}명 · {shareQtyText(post, share.qty)}
           </p>
           <p className="mt-2 text-meta text-brown-soft">
             신청 <Countdown closesInMin={post.closesInMin} />

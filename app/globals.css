@@ -10,8 +10,6 @@
   --color-brown: #3d2b1f; /* 본문 (크림 위 12.75) */
   --color-brown-soft: #7a6557; /* 보조 글자 (크림 위 5.21) */
 
-  --color-gray: #6f6f6f; /* 취소선 원래 가격 (흰 카드 위 5.0) */
-
   /* 보조색. 이 위에는 brown 글자만 올린다 (노랑 8.27, 살구 9.70). 다른 글자색은 4.5 미달 */
   --color-yellow: #f6c453;
   --color-apricot: #fbd3be;
@@ -28,7 +26,7 @@
   --text-title: 22px; /* 상세 품목명 */
   --text-heading: 17px; /* 화면 제목, 섹션 제목 */
   --text-body: 15px;
-  --text-meta: 13px; /* 보조 정보, 라벨 */
+  --text-meta: 14px; /* 보조 정보, 라벨. 가격·시간·장소가 여기 실려서 14px 아래로 내리지 않는다 */
   --text-nav: 11px; /* 하단 탭 라벨 */
 
   --spacing-gutter: 20px; /* 화면 좌우 여백 */

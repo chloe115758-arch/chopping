@@ -21,10 +21,13 @@ export const distance = (m: number) =>
 
 export const URGENT_MIN = 180;
 
-// 남은 초 → "시:분:초" (24시간을 넘으면 시가 계속 커진다: 48:00:00)
-export function hms(sec: number) {
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${pad(Math.floor(sec / 3600))}:${pad(Math.floor(sec / 60) % 60)}:${pad(sec % 60)}`;
+// 남은 초 → "45분 남음" / "3시간 20분 남음" / "2일 남음". 분·일은 내림, 1분 미만은 1분
+export function timeLeft(sec: number) {
+  if (sec <= 0) return "마감";
+  const min = Math.max(1, Math.floor(sec / 60));
+  if (min < 60) return `${min}분 남음`;
+  if (min < 1440) return `${Math.floor(min / 60)}시간${min % 60 ? ` ${min % 60}분` : ""} 남음`;
+  return `${Math.floor(min / 1440)}일 남음`;
 }
 
 // 수령 시각 → "11월 19일(목) 오후 7시" / "오전 11시 30분"

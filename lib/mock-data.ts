@@ -19,8 +19,8 @@ export type Post = {
   author: { nickname: string; reviewCount: number };
 };
 
-export const ME = "자취3년차";
-export const ME_REVIEW_COUNT = 4;
+// 로그인이 없어서 "나"를 여기 한 곳에서 정한다
+export const CURRENT_USER = { nickname: "자취3년차", reviewCount: 4, town: "망원동" };
 
 const tonight: Slot = { label: "오늘 저녁 8시", inHours: 4 };
 const tomorrow: Slot = { label: "내일 저녁 7시", inHours: 27 };
@@ -64,6 +64,6 @@ export const posts: Post[] = [
     id: "6", item: "롤앤롤 3겹 화장지 30롤 3팩", photo: "/posts/tissue.png",
     totalQty: 90, unit: "롤", totalPrice: 34800, people: 6, joined: 2,
     distanceM: 0, closesInMin: 300, place: "망원역 2번 출구 앞",
-    slots: [tomorrow], author: { nickname: ME, reviewCount: ME_REVIEW_COUNT },
+    slots: [tomorrow], author: CURRENT_USER,
   },
 ];
