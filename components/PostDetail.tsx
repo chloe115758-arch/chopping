@@ -2,7 +2,6 @@
 
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { CURRENT_USER } from "@/lib/mock-data";
 import { POLICY } from "@/lib/policy-copy";
 import { perPerson, shareHistoryText, shareQtyText, won } from "@/lib/share";
 import { useStore } from "@/lib/store";
@@ -39,7 +38,7 @@ export default function PostDetail() {
 
   const share = perPerson(post.totalQty, post.totalPrice, post.people);
   const done = applied.find((a) => a.postId === post.id);
-  const isMine = post.author.nickname === CURRENT_USER.nickname;
+  const isMine = !!post.mine;
   // shortcut: 인원이 찼는지만 본다. 마감 시각이 지난 글의 신청 막기는 실제 마감 시각이 생기면 추가한다.
   const full = post.joined >= post.people;
 

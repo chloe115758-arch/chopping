@@ -1,7 +1,14 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { CATEGORIES, CURRENT_USER, PUBLIC_PLACES, SPLIT_METHODS } from "@/lib/mock-data";
+import {
+  CATEGORIES,
+  CURRENT_USER,
+  PUBLIC_PLACES,
+  SPLIT_METHODS,
+  type Category,
+} from "@/lib/mock-data";
 import { perPerson, shareQtyText, slotLabel, won } from "@/lib/share";
 import { useStore } from "@/lib/store";
 import Button from "./Button";
@@ -20,15 +27,19 @@ const pad = (n: number) => String(n).padStart(2, "0");
 const ymd = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
 export default function NewPostForm() {
-  const { addPost } = useStore();
-  const [item, setItem] = useState("");
+  const { addPost, dong } = useStore();
+  // 피드 검색 결과가 없을 때 /new?item=수박 으로 넘어오면 품목명을 미리 채운다
+  const [item, setItem] = useState(useSearchParams().get("item") ?? "");
+  const [category, setCategory] = useState<Category | "">("");
   const [qty, setQty] = useState("");
   const [unit, setUnit] = useState("개");
   const [price, setPrice] = useState("");
   const [people, setPeople] = useState(4);
   const [splitByKind, setSplitByKind] = useState(false);
   const [photo, setPhoto] = useState<string>();
-  const [place, setPlace] = useState(PUBLIC_PLACES[CURRENT_USER.town][0]); // 공공장소를 기본값으로 제안
+  // 손대기 전에는 지금 동네의 첫 공공장소를 기본값으로 제안한다
+  const [typedPlace, setPlace] = useState<string>();
+  const place = typedPlace ?? PUBLIC_PLACES[dong][0];
   const [showMap, setShowMap] = useState(false);
   const [pin, setPin] = useState<Pin>();
   const [today] = useState(() => ymd(new Date()));
@@ -42,6 +53,7 @@ export default function NewPostForm() {
   const pickupLabel = Number.isNaN(pickup.getTime()) ? null : slotLabel(pickup);
   const ready =
     item.trim() !== "" &&
+    category !== "" &&
     unit.trim() !== "" &&
     place.trim() !== "" &&
     share !== null &&
@@ -87,8 +99,8 @@ export default function NewPostForm() {
       totalPrice: Number(price),
       people,
       joined: 1, // 등록자 본인
-      dong: CURRENT_USER.town,
-      category: CATEGORIES[0], // 3-B에서 선택 UI로 바꾼다
+      dong,
+      category,
       // 신청 마감은 수령 1시간 전 (최소 10분은 열어 둔다)
       closesInMin: elapsedMin + Math.max(10, Math.round(inHours * 60) - 60),
       place: place.trim(),
@@ -96,7 +108,8 @@ export default function NewPostForm() {
       slots: [{ label: pickupLabel, inHours }],
       // shortcut: 등록 화면에 선택 UI가 없어 기본값 고정. 선택을 받게 되면 여기에 연결한다
       splitMethod: SPLIT_METHODS[1],
-      author: CURRENT_USER,
+      mine: true,
+      author: CURRENT_USER, // 닉네임은 보여줄 때 지금 닉네임으로 바뀐다 (store)
     });
     setPosted(true);
   };
@@ -144,6 +157,20 @@ export default function NewPostForm() {
             )}
           </label>
         </div>
+
+        <label className={label}>
+          카테고리
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value as Category | "")}
+            className={field}
+          >
+            <option value="">골라 주세요</option>
+            {CATEGORIES.map((c) => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
+        </label>
 
         <div className="flex gap-3">
           <label className={`flex-1 ${label}`}>
@@ -255,7 +282,7 @@ export default function NewPostForm() {
             </button>
           </div>
           <datalist id="public-places">
-            {PUBLIC_PLACES[CURRENT_USER.town].map((p) => (
+            {PUBLIC_PLACES[dong].map((p) => (
               <option key={p} value={p} />
             ))}
           </datalist>

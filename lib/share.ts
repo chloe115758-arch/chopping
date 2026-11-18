@@ -18,6 +18,16 @@ export const shareQtyText = (
 export const shareHistoryText = (count: number) =>
   count > 0 ? `나눔 ${count}번 완료` : "첫 나눔";
 
+// 받침에 따라 "은/는"을 고른다 (“수박”은, “사과”는). 한글로 끝나지 않으면 "은(는)"
+export function topicParticle(word: string) {
+  const code = word.charCodeAt(word.length - 1) - 0xac00;
+  if (!(code >= 0 && code <= 11171)) return "은(는)";
+  return code % 28 ? "은" : "는";
+}
+
+// 닉네임: 한글·영문·숫자 2~10자 (띄어쓰기와 기호는 받지 않는다)
+export const isValidNickname = (name: string) => /^[가-힣a-zA-Z0-9]{2,10}$/.test(name);
+
 export const won = (n: number) => `${n.toLocaleString("ko-KR")}원`;
 
 export const URGENT_MIN = 180;

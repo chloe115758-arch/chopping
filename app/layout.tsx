@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import BottomNav from "@/components/BottomNav";
+import Splash from "@/components/Splash";
 import { StoreProvider } from "@/lib/store";
 import "./globals.css";
 
@@ -19,6 +20,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
         <StoreProvider>
+          {/* 처음 한 번: 스플래시 → 기능 소개 → 닉네임 정하기 */}
+          <Splash />
           {/* 모바일 390px 기준, 데스크톱은 가운데 정렬 */}
           <div className="mx-auto min-h-dvh w-full max-w-[430px] px-gutter pb-36 pt-6">
             {children}

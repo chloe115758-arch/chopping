@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CURRENT_USER, type Post } from "@/lib/mock-data";
+import type { Post } from "@/lib/mock-data";
 import { perPerson, shareHistoryText, shareQtyText, won } from "@/lib/share";
 import Card from "./Card";
 import Countdown from "./Countdown";
@@ -7,9 +7,17 @@ import People from "./People";
 import PostThumb from "./PostThumb";
 
 // 윗줄: 상태(남은 시간 또는 수령 일정) + 수령 장소(내 글이면 배지) / 아랫줄: 썸네일, 품목, 내 몫 가격, 계산식, 모집 인원·나눔 이력
-export default function PostCard({ post, status }: { post: Post; status?: string }) {
+// children: 카드 아래쪽 칸(진행 표시, 버튼). 카드 전체가 링크라서 버튼은 링크 밖인 여기에 둔다
+export default function PostCard({
+  post,
+  status,
+  children,
+}: {
+  post: Post;
+  status?: string;
+  children?: React.ReactNode;
+}) {
   const share = perPerson(post.totalQty, post.totalPrice, post.people);
-  const isMine = post.author.nickname === CURRENT_USER.nickname;
   return (
     <Card>
       <Link href={`/posts/${post.id}`} className="block rounded-card p-4">
@@ -22,7 +30,7 @@ export default function PostCard({ post, status }: { post: Post; status?: string
               <Countdown closesInMin={post.closesInMin} />
             )}
           </span>
-          {isMine ? (
+          {post.mine ? (
             <span className="rounded-full bg-apricot px-2.5 py-0.5 text-xs font-semibold text-brown">
               내가 올린 글
             </span>
@@ -65,6 +73,7 @@ export default function PostCard({ post, status }: { post: Post; status?: string
           </span>
         </div>
       </Link>
+      {children && <div className="border-t border-line px-4 py-3">{children}</div>}
     </Card>
   );
 }
